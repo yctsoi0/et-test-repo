@@ -1,0 +1,39 @@
+apiVersion: v1
+data:
+  greeting_message: This is the replaced message from k8s's configMap!
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: test-repo-property-confg
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: test-repo
+  name: test-repo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-repo
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: test-repo
+    spec:
+      containers:
+      - image: test-repo-0.0.1-SNAPSHOT
+        name: test-repo
+        resources: {}
+        volumeMounts:
+          - name: config-volume
+            mountPath: /workspace/config
+    volumes:
+      - name: config-volume
+        configMap:
+          name: test-repo-property-confg
+status: {}
